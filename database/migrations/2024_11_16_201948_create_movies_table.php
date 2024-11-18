@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('image')->nullable();
             $table->float('rating')->nullable();
-            $table->json('genre')->default(json_encode([]));
+            $table->json('genre')->nullable(); 
             $table->string('filmProducer')->nullable();
         });
     }

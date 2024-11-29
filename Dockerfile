@@ -9,11 +9,15 @@ RUN apt-get update && apt-get install -y \
     zip \
     git \
     unzip \
+    nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql
 
 # Instala Composer para gestionar las dependencias de PHP
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copia el archivo de configuración de Nginx desde la raíz
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # Establece el directorio de trabajo
 WORKDIR /var/www
@@ -24,8 +28,11 @@ COPY . .
 # Instala las dependencias de Laravel con Composer (sin dependencias de desarrollo)
 RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
-# Establece el puerto 9000 para PHP-FPM
-EXPOSE 9000
+# Copia el archivo de configuración de PHP para FPM (si es necesario)
+COPY ./docker/php.ini /usr/local/etc/php/
 
-# Comando para ejecutar PHP-FPM
-CMD ["php-fpm"]
+# Establece el puerto 80 para Nginx
+EXPOSE 80
+
+# Comando para iniciar Nginx y PHP-FPM
+CMD service nginx start && php-fpm

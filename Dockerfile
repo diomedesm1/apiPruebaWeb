@@ -24,9 +24,6 @@ COPY . .
 # Instala las dependencias de Laravel con Composer (sin dependencias de desarrollo)
 RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
-# Copia el archivo de configuración de PHP para FPM (si es necesario)
-COPY ./docker/php.ini /usr/local/etc/php/
-
 # Establece el puerto 9000 para PHP-FPM
 EXPOSE 9000
 

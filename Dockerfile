@@ -1,35 +1,39 @@
-# Usa la imagen oficial de PHP con FPM
-FROM php:8.2-fpm
+# Usar la imagen oficial de PHP con Apache
+FROM php:8.2-apache
 
-# Instala dependencias necesarias para Laravel y Composer
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    git \
-    unzip \
-    nginx \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    libzip-dev zip unzip curl git libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
 
-# Instala Composer para gestionar las dependencias de PHP
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Habilitar mod_rewrite para Apache
+RUN a2enmod rewrite
 
-# Copia el archivo de configuración de Nginx desde la raíz
-COPY ./nginx.conf /etc/nginx/nginx.conf
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Establece el directorio de trabajo
-WORKDIR /var/www
+# Establecer el directorio de trabajo en /var/www/html
+WORKDIR /var/www/html
 
-# Copia el código de la aplicación Laravel al contenedor
-COPY . .
+# Copiar los archivos del proyecto al contenedor
+COPY . /var/www/html
 
-# Instala las dependencias de Laravel con Composer (sin dependencias de desarrollo)
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
+RUN composer install
 
-# Establece el puerto 80 para Nginx
+# Establecer los permisos correctos para el almacenamiento y el caché
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Configuración de permisos
+RUN mkdir -p database && touch database/database.sqlite && \
+    chmod -R 775 database
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
+RUN php artisan migrate:fresh --seed --force
+
+# Exponer el puerto 80
 EXPOSE 80
 
-# Comando para iniciar Nginx y PHP-FPM en primer plano
-CMD service nginx start && php-fpm -F
+# Comando predeterminado
+CMD ["apache2-foreground"]

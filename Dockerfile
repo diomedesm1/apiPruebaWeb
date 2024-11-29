@@ -32,4 +32,5 @@ RUN composer install --no-dev --optimize-autoloader --prefer-dist
 EXPOSE 80
 
 # Comando para iniciar Nginx y PHP-FPM
-CMD service nginx start && php-fpm
+CMD nginx -g "daemon off;" && php-fpm
+

@@ -19,7 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+    'http://localhost:5173',
+    'https://apiprueba1-production.up.railway.app', 
+],
 
     'allowed_origins_patterns' => [],
 

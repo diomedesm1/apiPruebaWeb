@@ -31,6 +31,5 @@ RUN composer install --no-dev --optimize-autoloader --prefer-dist
 # Establece el puerto 80 para Nginx
 EXPOSE 80
 
-# Comando para iniciar Nginx y PHP-FPM
-CMD nginx -g "daemon off;" && php-fpm
-
+# Comando para iniciar Nginx y PHP-FPM en primer plano
+CMD service nginx start && php-fpm -F

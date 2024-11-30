@@ -1,42 +1,49 @@
-# Usar la imagen oficial de PHP con Apache
 FROM php:8.2-apache
 
-# Instalar dependencias del sistema
+# Instalar dependencias
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip curl git libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip
 
-# Habilitar mod_rewrite para Apache
+# Limpiar caché de apt
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Instalar extensiones de PHP
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Configurar DocumentRoot de Apache
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Habilitar módulo de reescritura de Apache
 RUN a2enmod rewrite
-
-# Configurar un ServerName predeterminado
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Establecer el directorio de trabajo en /var/www/html
-WORKDIR /var/www/html
-
-# Copiar los archivos del proyecto al contenedor
+# Copiar archivos del proyecto
 COPY . /var/www/html
 
-# Instalar dependencias de Laravel
-RUN composer install --optimize-autoloader --no-dev
+# Instalar dependencias de Composer
+RUN composer install --no-dev --no-interaction --optimize-autoloader
 
-# Establecer los permisos correctos para almacenamiento y caché
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html
+# Configurar permisos
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configurar Apache para usar el directorio público de Laravel
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+# Generar key y limpiar configuración
+RUN php artisan key:generate
+RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
 
-# Configurar el puerto de escucha dinámico
-ENV PORT=8080
-RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
+# Exponer puerto dinámico
+EXPOSE $PORT
 
-# Exponer el puerto dinámico
-EXPOSE 8080
-
-# Comando predeterminado para iniciar el contenedor
-CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
+# Comando por defecto
+CMD sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && apache2-foreground

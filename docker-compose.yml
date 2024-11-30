@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
     app:
         build:
@@ -9,12 +8,16 @@ services:
         container_name: laravel_app
         restart: always
         ports:
-            - "8080:8080" # Fijo a 8080 para Railway
-        volumes:
-            - .:/var/www/html
+            - "$PORT:$PORT"
         environment:
             APP_ENV: production
             APP_DEBUG: "false"
-            APP_KEY: "base64:GtWER1olYJc5uGl12vHdtkEylA0i7fh7lgFBn5Du9xE="
-            APP_URL: https://apiprueba1-production.up.railway.app
-            PORT: 8080 # Asegura que el contenedor escuche en el puerto esperado
+            APP_KEY: ${APP_KEY}
+            APP_URL: ${APP_URL}
+            PORT: ${PORT}
+            DB_CONNECTION: mysql
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}

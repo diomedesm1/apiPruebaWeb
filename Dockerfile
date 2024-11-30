@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
 # Habilitar mod_rewrite para Apache
 RUN a2enmod rewrite
 
+# Configurar un ServerName predeterminado
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -28,16 +31,21 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
 # Configurar Apache para usar el directorio público de Laravel
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Configurar el puerto de escucha dinámico (Railway usa la variable de entorno PORT)
+# Configurar el puerto de escucha dinámico
 ENV PORT=8080
 RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
 
-# Migraciones y optimización de Laravel
+# Configurar APP_URL para Laravel
+RUN echo "APP_URL=http://localhost:${PORT}" >> .env
+
+# Limpiar configuraciones y optimizar Laravel
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
-    && php artisan optimize \
-    && php artisan migrate --force
+    && php artisan optimize
 
-# Comando predeterminado para iniciar Apache
-CMD ["apache2-foreground"]
+# Exponer el puerto dinámico
+EXPOSE 8080
+
+# Comando predeterminado
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]

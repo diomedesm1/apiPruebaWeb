@@ -35,14 +35,8 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /et
 ENV PORT=8080
 RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
 
-# Limpiar configuraciones y optimizar Laravel
-RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear \
-    && php artisan optimize
-
 # Exponer el puerto dinámico
 EXPOSE 8080
 
-# Comando predeterminado
-CMD ["apache2-foreground"]
+# Comando predeterminado para iniciar el contenedor
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]

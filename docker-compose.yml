@@ -8,6 +8,8 @@ services:
         image: laravel-app
         container_name: laravel_app
         restart: always
+        ports:
+            - "8080:${PORT}" # Asegura que el puerto externo coincide con la variable dinámica
         volumes:
             - .:/var/www/html
             - ./storage:/var/www/html/storage
@@ -16,4 +18,4 @@ services:
             APP_DEBUG: "false"
             APP_KEY: "base64:GtWER1olYJc5uGl12vHdtkEylA0i7fh7lgFBn5Du9xE="
             APP_URL: https://apiprueba1-production.up.railway.app
-            PORT: 8080 # Asegúrate de incluir la variable PORT
+            PORT: 8080 # Railway usa esta variable para asignar el puerto dinámico

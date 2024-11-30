@@ -47,5 +47,9 @@ RUN php artisan config:clear \
 # Exponer el puerto dinámico
 EXPOSE 8080
 
+# Agregar un HEALTHCHECK
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT} || exit 1
+
 # Comando predeterminado
 CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]

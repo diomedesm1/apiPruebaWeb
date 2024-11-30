@@ -18,22 +18,29 @@ WORKDIR /var/www/html
 # Copiar los archivos del proyecto al contenedor
 COPY . /var/www/html
 
-RUN composer install
+# Instalar dependencias de Laravel
+RUN composer install --optimize-autoloader --no-dev
 
-# Establecer los permisos correctos para el almacenamiento y el caché
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Establecer los permisos correctos para almacenamiento y caché
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html
 
-# Configuración de permisos
-RUN mkdir -p database && touch database/database.sqlite && \
-    chmod -R 775 database
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+# Configurar Apache para usar el directorio público de Laravel
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-RUN php artisan migrate:fresh --force
+# Configurar el puerto de escucha dinámico (Railway usa la variable de entorno PORT)
+ENV PORT=8080
+RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
 
-# Exponer el puerto 80
-EXPOSE 80
+# Migraciones y optimización de Laravel
+RUN php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && php artisan optimize \
+    && php artisan migrate --force
 
-# Comando predeterminado
+# Exponer el puerto dinámico
+EXPOSE 8080
+
+# Comando predeterminado para iniciar Apache
 CMD ["apache2-foreground"]

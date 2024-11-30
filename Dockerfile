@@ -36,8 +36,13 @@ RUN composer install --no-dev --no-interaction --optimize-autoloader
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Generar key y limpiar configuración
-RUN php artisan key:generate
+# Crear un .env con la APP_KEY existente si no existe
+RUN if [ ! -f .env ]; then \
+    cp .env.example .env && \
+    php artisan key:generate; \
+    fi
+
+# Limpiar configuraciones
 RUN php artisan config:clear
 RUN php artisan route:clear
 RUN php artisan view:clear

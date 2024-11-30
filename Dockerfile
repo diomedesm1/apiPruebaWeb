@@ -39,8 +39,5 @@ RUN php artisan config:clear \
     && php artisan optimize \
     && php artisan migrate --force
 
-# Exponer el puerto dinámico
-EXPOSE 8080
-
 # Comando predeterminado para iniciar Apache
 CMD ["apache2-foreground"]

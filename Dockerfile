@@ -25,9 +25,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Copiar configuración de Apache
-COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
-
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -43,20 +40,7 @@ RUN composer install --no-dev --no-interaction --optimize-autoloader
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Preparar entorno de producción
-RUN if [ ! -f .env ]; then \
-    cp .env.example .env; \
-    fi
-
-# Generar key de aplicación
-RUN php artisan key:generate
-
-# Limpiar configuraciones
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-
-# Script de arranque
+# Preparar script de inicio
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 

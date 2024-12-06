@@ -67,7 +67,7 @@ class MovieController extends Controller
                 'description' => $request->input('description'),
                 'rating' => $request->input('rating'),
                 'filmProducer' => $request->input('filmProducer'),
-                'genre' => $request->input('genre'), // Si es un arreglo, puedes gestionarlo así
+                'genre' => $request->input('genre'), 
             ]);
     
             return response()->json($movie);

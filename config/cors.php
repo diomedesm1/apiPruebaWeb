@@ -20,11 +20,10 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-    'http://localhost:5173',
+    'http://localhost:5173', 
     'https://apiprueba1-production.up.railway.app',
-    'present-daryl-diomedesm1-5e0a99ab.koyeb.app',
-
-
+    'https://timonm1.github.io/WebPrueba1', 
+    'https://present-daryl-diomedesm1-5e0a99ab.koyeb.app', 
 ],
 
     'allowed_origins_patterns' => [],

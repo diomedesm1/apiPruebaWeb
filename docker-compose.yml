@@ -17,4 +17,4 @@ services:
             APP_ENV: local
             APP_DEBUG: "true"
             APP_KEY: ""
-            APP_URL: https://present-daryl-diomedesm1-5e0a99ab.koyeb.app
+            APP_URL: http://localhost:8000

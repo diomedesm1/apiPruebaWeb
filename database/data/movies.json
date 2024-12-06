@@ -1,0 +1,42 @@
+[
+    {
+        "title": "Inception",
+        "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+        "image": "https://example.com/inception.jpg",
+        "rating": 8.8,
+        "genre": ["Action", "Sci-Fi", "Thriller"],
+        "filmProducer": "Christopher Nolan"
+    },
+    {
+        "title": "The Shawshank Redemption",
+        "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+        "image": "https://example.com/shawshank.jpg",
+        "rating": 9.3,
+        "genre": ["Drama"],
+        "filmProducer": "Frank Darabont"
+    },
+    {
+        "title": "The Dark Knight",
+        "description": "When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham. Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+        "image": "https://example.com/darkknight.jpg",
+        "rating": 9.0,
+        "genre": ["Action", "Crime", "Drama"],
+        "filmProducer": "Christopher Nolan"
+    },
+    {
+        "title": "Pulp Fiction",
+        "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "image": "https://example.com/pulpfiction.jpg",
+        "rating": 8.9,
+        "genre": ["Crime", "Drama"],
+        "filmProducer": "Quentin Tarantino"
+    },
+    {
+        "title": "The Godfather",
+        "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+        "image": "https://example.com/godfather.jpg",
+        "rating": 9.2,
+        "genre": ["Crime", "Drama"],
+        "filmProducer": "Francis Ford Coppola"
+    }
+]

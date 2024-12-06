@@ -30,7 +30,7 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-RUN php artisan migrate:fresh --force
+RUN php artisan migrate:fresh --seed --force
 RUN php artisan config:clear
 RUN php artisan config:cache
 

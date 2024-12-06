@@ -13,7 +13,7 @@ class MovieController extends Controller
     public function index()
     {
         $movies = Movie::all();
-        return response()->json($movies, 201);
+        return response()->json($movies, 200);
     }
 
     /**
@@ -70,7 +70,7 @@ class MovieController extends Controller
                 'genre' => $request->input('genre'), 
             ]);
     
-            return response()->json($movie);
+            return response()->json($movie, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al actualizar la película'], 500);
         }
@@ -86,7 +86,7 @@ class MovieController extends Controller
     
             $movie->delete();
     
-            return response()->json(['message' => 'Película eliminada con éxito'], 200);
+            return response()->json(['message' => 'Película eliminada con éxito'], 204);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al eliminar la película', 'error' => $e->getMessage()], 500);
         }

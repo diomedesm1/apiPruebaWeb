@@ -25,6 +25,7 @@ return [
     'https://timonm1.github.io/WebPrueba1', 
     'https://present-daryl-diomedesm1-5e0a99ab.koyeb.app', 
     'https://timonm1.github.io',
+    'https://github.com/diomedesm1/apiPruebaWeb'
 ],
 
     'allowed_origins_patterns' => [],

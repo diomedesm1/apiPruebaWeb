@@ -22,9 +22,9 @@ return [
     'allowed_origins' => [
     'http://localhost:5173', 
     'https://apiprueba1-production.up.railway.app',
-    'https://timonm1.github.io/WebPrueba1', 
+    'https://timonm1.github.io/WebPrueba1/', 
     'https://present-daryl-diomedesm1-5e0a99ab.koyeb.app', 
-    'https://timonm1.github.io',
+    'https://timonm1.github.io.*',
     'https://github.com/diomedesm1/apiPruebaWeb'
 ],
 
